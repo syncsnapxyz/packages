@@ -1,0 +1,45 @@
+# Publish npm packages with Turborepo (single workflow)
+# Builds and publishes only packages that have changes since the last commit
+name: Publish to npm
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-${{ runner.os }}-${{ hashFiles('package.json', 'react/**', 'syncsnap/**') }}
+          restore-keys: |
+            turbo-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build (only packages with changes)
+        run: npx turbo run build --filter='...[HEAD^1]'
+
+      - name: Publish (only packages with changes)
+        run: npx turbo run publish --filter='...[HEAD^1]'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
