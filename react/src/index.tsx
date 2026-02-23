@@ -1,7 +1,7 @@
-export { SyncsnapQrCode } from "./components/SyncsnapQrCode";
-export { SyncsnapUploadButton } from "./components/SyncsnapUploadButton";
-export { useSyncsnapJob } from "./hooks/useSyncsnapJob";
-export { createUploadUrl } from "./utils";
+export { SyncsnapQrCode } from './components/SyncsnapQrCode';
+export { SyncsnapUploadButton } from './components/SyncsnapUploadButton';
+export { useSyncsnapJob } from './hooks/useSyncsnapJob';
+export { createUploadUrl } from './utils';
 export type {
   Job,
   JobStatus,
@@ -12,4 +12,4 @@ export type {
   UseSyncsnapJobResult,
   SyncsnapQrCodeProps,
   SyncsnapUploadButtonProps,
-} from "./types";
+} from './types';

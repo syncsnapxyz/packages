@@ -1,0 +1,2 @@
+# Safety net: only dist is published (package.json "files" = ["dist"])
+src/

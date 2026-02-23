@@ -7,10 +7,10 @@ Components use **Tailwind CSS** and **CSS variables** for the theme. You don’t
 If your app already uses **Tailwind v4**, add these imports in your main CSS file (e.g. `app/globals.css`):
 
 ```css
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@syncsnap/react/theme";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@syncsnap/react/theme';
 ```
 
 Install peer deps if needed:
@@ -19,7 +19,7 @@ Install peer deps if needed:
 npm install tailwindcss tw-animate-css shadcn
 ```
 
-The theme file includes an `@source` so Tailwind automatically scans the SDK for class names. No extra config or copy-paste needed.
+The theme file includes an `@source` so Tailwind automatically scans the SDK for class names. When you install from npm, the published theme points at the built JS in the package so Tailwind finds all component classes. No extra config or copy-paste needed.
 
 ## Option 2: Copy the full stylesheet
 

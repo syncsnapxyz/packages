@@ -8,6 +8,22 @@
     "publish": {
       "dependsOn": ["build"],
       "outputs": []
+    },
+    "publish:ci": {
+      "dependsOn": ["build"],
+      "outputs": []
+    },
+    "lint": {
+      "outputs": []
+    },
+    "lint:fix": {
+      "outputs": []
+    },
+    "format": {
+      "outputs": []
+    },
+    "format:check": {
+      "outputs": []
     }
   }
 }

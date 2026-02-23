@@ -1,12 +1,21 @@
 {
   "name": "syncsnap-packages",
   "private": true,
-  "workspaces": [
-    "react",
-    "syncsnap"
-  ],
+  "workspaces": ["react", "syncsnap"],
+  "scripts": {
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "format": "turbo run format",
+    "format:check": "turbo run format:check"
+  },
   "devDependencies": {
-    "turbo": "^2.3.0"
+    "turbo": "^2.3.0",
+    "eslint": "^9.0.0",
+    "@eslint/js": "^9.0.0",
+    "typescript-eslint": "^8.0.0",
+    "globals": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.0"
   },
   "packageManager": "npm@10.0.0"
 }
