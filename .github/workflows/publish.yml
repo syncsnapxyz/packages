@@ -54,7 +54,7 @@ jobs:
         run: npx turbo run format:check
 
       - name: Build (only packages with changes)
-        run: npx turbo run build --filter='syncsnap'
+        run: npx turbo run build --filter='...[HEAD^1]'
 
       - name: Publish (only packages with changes)
-        run: npx turbo run publish:ci --filter='syncsnap'
+        run: npx turbo run publish:ci --filter='...[HEAD^1]'
