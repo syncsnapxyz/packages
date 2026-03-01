@@ -22,19 +22,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+          # Do NOT set registry-url here: it writes //registry.npmjs.org/:_authToken to a user .npmrc.
+          # With OIDC we don't set NODE_AUTH_TOKEN, so that token is empty and npm uses it instead of OIDC → ENEEDAUTH.
           cache: 'npm'
 
       # npm 11.5.1+ required for OIDC trusted publishing
       - name: Install npm
         run: npm install -g npm@latest
 
-      - name: Version check for npm
-        run: npm --version
-
-      # Scope registry for @syncsnap/* (auth is via OIDC, no token)
-      - name: Setup .npmrc for scope
-        run: echo "@syncsnap:registry=https://registry.npmjs.org/" >> .npmrc
+      # Project .npmrc: registry + scope. No _authToken so npm publish uses OIDC.
+      - name: Setup .npmrc
+        run: |
+          echo "registry=https://registry.npmjs.org/" >> .npmrc
+          echo "@syncsnap:registry=https://registry.npmjs.org/" >> .npmrc
 
       - name: Cache Turbo
         uses: actions/cache@v4
