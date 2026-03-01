@@ -92,7 +92,8 @@ function DialogContent({
             maxWidth: '24rem',
             width: '100%',
             padding: '1rem',
-            backgroundColor: 'white',
+            backgroundColor: 'var(--background, #fff)',
+            color: 'var(--foreground, #0a0a0a)',
             borderRadius: '0.75rem',
             boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
           }}

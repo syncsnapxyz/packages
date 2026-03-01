@@ -1,4 +1,5 @@
 import type { SyncsnapServer } from '../client';
+import { SyncsnapRateLimitError } from '../client';
 import type {
   DownloadUrlResponse,
   Job,
@@ -72,8 +73,15 @@ function getCatchAllPath(
 
 export function createJobHandler(client: SyncsnapServer) {
   return async function POST(): Promise<Response> {
-    const job = await client.createJob();
-    return json(job);
+    try {
+      const job = await client.createJob();
+      return json(job);
+    } catch (err) {
+      if (err instanceof SyncsnapRateLimitError) {
+        return json({ error: err.message }, { status: 429 });
+      }
+      throw err;
+    }
   };
 }
 
@@ -86,8 +94,15 @@ export function getJobHandler(client: SyncsnapServer) {
     if (!resolved?.id) {
       return json({ error: 'Job id is required' }, { status: 400 });
     }
-    const job = await client.getJob(resolved.id);
-    return json(job);
+    try {
+      const job = await client.getJob(resolved.id);
+      return json(job);
+    } catch (err) {
+      if (err instanceof SyncsnapRateLimitError) {
+        return json({ error: err.message }, { status: 429 });
+      }
+      throw err;
+    }
   };
 }
 
@@ -100,12 +115,19 @@ export function getDownloadUrlHandler(client: SyncsnapServer) {
     if (!resolved?.id) {
       return json({ error: 'Job id is required' }, { status: 400 });
     }
-    const expirationMinutes = parseExpiration(request.url);
-    const response: PresignedUrlResponse = await client.getDownloadUrl(
-      resolved.id,
-      { expirationMinutes }
-    );
-    return json(response);
+    try {
+      const expirationMinutes = parseExpiration(request.url);
+      const response: PresignedUrlResponse = await client.getDownloadUrl(
+        resolved.id,
+        { expirationMinutes }
+      );
+      return json(response);
+    } catch (err) {
+      if (err instanceof SyncsnapRateLimitError) {
+        return json({ error: err.message }, { status: 429 });
+      }
+      throw err;
+    }
   };
 }
 
@@ -133,8 +155,15 @@ export function createRouteHandler(options: CreateRouteHandlerOptions) {
       const resolved = await resolveParams(context.params);
       const segments = getCatchAllPath(resolved);
       if (segments.length === 2 && segments[0] === 'job') {
-        const job = await client.getJob(segments[1]);
-        return json(job);
+        try {
+          const job = await client.getJob(segments[1]);
+          return json(job);
+        } catch (err) {
+          if (err instanceof SyncsnapRateLimitError) {
+            return json({ error: err.message }, { status: 429 });
+          }
+          throw err;
+        }
       }
 
       if (
@@ -143,25 +172,32 @@ export function createRouteHandler(options: CreateRouteHandlerOptions) {
         segments[2] === 'download'
       ) {
         const jobId = segments[1];
-        const job = await client.getJob(jobId);
-        if (job.status !== 'completed') {
-          return json({ error: 'Job is not completed' }, { status: 400 });
-        }
-        const expirationMinutes = parseExpiration(request.url);
-        const presigned: PresignedUrlResponse = await client.getDownloadUrl(
-          jobId,
-          {
-            expirationMinutes,
+        try {
+          const job = await client.getJob(jobId);
+          if (job.status !== 'completed') {
+            return json({ error: 'Job is not completed' }, { status: 400 });
           }
-        );
-        const response: DownloadUrlResponse = { ...presigned };
-        if (onCompletedCallback) {
-          const payload = await onCompletedCallback(job, presigned);
-          if (payload !== undefined) {
-            response.completedPayload = payload;
+          const expirationMinutes = parseExpiration(request.url);
+          const presigned: PresignedUrlResponse = await client.getDownloadUrl(
+            jobId,
+            {
+              expirationMinutes,
+            }
+          );
+          const response: DownloadUrlResponse = { ...presigned };
+          if (onCompletedCallback) {
+            const payload = await onCompletedCallback(job, presigned);
+            if (payload !== undefined) {
+              response.completedPayload = payload;
+            }
           }
+          return json(response);
+        } catch (err) {
+          if (err instanceof SyncsnapRateLimitError) {
+            return json({ error: err.message }, { status: 429 });
+          }
+          throw err;
         }
-        return json(response);
       }
 
       if (
@@ -194,6 +230,9 @@ export function createRouteHandler(options: CreateRouteHandlerOptions) {
           }
           return json(body);
         } catch (err) {
+          if (err instanceof SyncsnapRateLimitError) {
+            return json({ error: err.message }, { status: 429 });
+          }
           const message = err instanceof Error ? err.message : 'Wait failed';
           const isTimeout =
             message.includes('timed out') ||
@@ -211,8 +250,15 @@ export function createRouteHandler(options: CreateRouteHandlerOptions) {
       const resolved = await resolveParams(context.params);
       const segments = getCatchAllPath(resolved);
       if (segments.length === 1 && segments[0] === 'job') {
-        const job = await client.createJob();
-        return json(job);
+        try {
+          const job = await client.createJob();
+          return json(job);
+        } catch (err) {
+          if (err instanceof SyncsnapRateLimitError) {
+            return json({ error: err.message }, { status: 429 });
+          }
+          throw err;
+        }
       }
 
       return json({ error: 'Not found' }, { status: 404 });

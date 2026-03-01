@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createUploadUrl, fetchJson } from './utils';
+import { createUploadUrl, fetchJson, SyncsnapRateLimitError } from './utils';
 
 describe('createUploadUrl', () => {
   it('returns URL with default base and job_id param', () => {
@@ -67,5 +67,26 @@ describe('fetchJson', () => {
     await expect(fetchJson('https://api.example.com/')).rejects.toThrow(
       'Syncsnap request failed (500)'
     );
+  });
+
+  it('throws SyncsnapRateLimitError with server message on 429', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 429,
+        json: () =>
+          Promise.resolve({
+            error: 'rate limit exceeded: too many requests from this IP',
+          }),
+      })
+    );
+
+    const err = await fetchJson('https://api.example.com/').catch((e) => e);
+    expect(err).toBeInstanceOf(SyncsnapRateLimitError);
+    expect(err.message).toBe(
+      'rate limit exceeded: too many requests from this IP'
+    );
+    expect(err.statusCode).toBe(429);
   });
 });

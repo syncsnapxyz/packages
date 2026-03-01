@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SyncsnapServer } from './client';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { SyncsnapRateLimitError, SyncsnapServer } from './client';
 
 describe('SyncsnapServer', () => {
   const mockFetch = vi.fn();
@@ -155,6 +155,23 @@ describe('SyncsnapServer', () => {
 
     const client = new SyncsnapServer();
     await expect(client.createJob()).rejects.toThrow('Invalid API key');
+  });
+
+  it('throws SyncsnapRateLimitError when response is 429', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 429,
+      json: () => Promise.resolve({ error: 'Rate limit exceeded' }),
+    });
+
+    const client = new SyncsnapServer();
+    const err = await client.createJob().then(
+      () => null,
+      (e) => e
+    );
+    expect(err).toBeInstanceOf(SyncsnapRateLimitError);
+    expect(err).toHaveProperty('message', 'Rate limit exceeded');
+    expect(err).toHaveProperty('statusCode', 429);
   });
 
   it('waitForJobCompletion returns when job is completed', async () => {

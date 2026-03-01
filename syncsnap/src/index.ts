@@ -1,4 +1,4 @@
-export { SyncsnapServer } from './client';
+export { SyncsnapServer, SyncsnapRateLimitError } from './client';
 export type {
   Job,
   JobStatus,
