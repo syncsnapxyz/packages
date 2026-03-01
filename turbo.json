@@ -1,29 +1,16 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "build": {
-      "outputs": ["dist/**"],
-      "dependsOn": []
-    },
-    "publish": {
-      "dependsOn": ["build"],
-      "outputs": []
-    },
+    "build": {"outputs": ["dist/**"], "dependsOn": []},
+    "publish": {"dependsOn": ["build"], "outputs": []},
     "publish:ci": {
       "dependsOn": ["build"],
-      "outputs": []
+      "outputs": [],
+      "passThroughEnv": ["ACTIONS_ID_TOKEN_REQUEST_URL", "ACTIONS_ID_TOKEN_REQUEST_TOKEN"]
     },
-    "lint": {
-      "outputs": []
-    },
-    "lint:fix": {
-      "outputs": []
-    },
-    "format": {
-      "outputs": []
-    },
-    "format:check": {
-      "outputs": []
-    }
+    "lint": {"outputs": []},
+    "lint:fix": {"outputs": []},
+    "format": {"outputs": []},
+    "format:check": {"outputs": []}
   }
 }

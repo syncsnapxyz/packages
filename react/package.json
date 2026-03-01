@@ -23,7 +23,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "build": "tsup src/index.tsx --dts --format esm --out-dir dist --clean --sourcemap && node scripts/copy-theme.cjs",
-    "publish": "npm publish --access public",
+    "publish:local": "npm publish --access public",
     "publish:ci": "npm publish --provenance --access public",
     "link": "npm run build && npm link",
     "prepublishOnly": "npm run build",
@@ -32,12 +32,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/syncsnap/packages.git",
+    "url": "https://github.com/syncsnapxyz/packages.git",
     "directory": "react"
   },
-  "homepage": "https://github.com/syncsnap/packages/react#readme",
+  "homepage": "https://github.com/syncsnapxyz/packages/react#readme",
   "bugs": {
-    "url": "https://github.com/syncsnap/packages/react/issues"
+    "url": "https://github.com/syncsnapxyz/packages/react/issues"
   },
   "publishConfig": {
     "access": "public"

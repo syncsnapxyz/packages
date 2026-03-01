@@ -3,6 +3,7 @@
   "private": true,
   "workspaces": ["react", "syncsnap"],
   "scripts": {
+    "build": "turbo run build --filter=./react --filter=./syncsnap",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "turbo run format",
