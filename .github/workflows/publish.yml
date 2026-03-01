@@ -48,7 +48,11 @@ jobs:
         run: npx turbo run format:check
 
       - name: Build (only packages with changes)
-        run: npx turbo run build --filter='...[HEAD^1]'
+        run: npx turbo run build --filter='...[HEAD^1]' \
+          --filter='!.'
 
       - name: Publish (only packages with changes)
-        run: npx turbo run publish:ci --filter='...[HEAD^1]'
+        run: npx turbo run publish:ci --filter='...[HEAD^1]' \
+          --filter='!.'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
