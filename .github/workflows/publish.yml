@@ -37,11 +37,8 @@ jobs:
           restore-keys: |
             turbo-${{ runner.os }}-
 
-      # Clean install to work around npm optional deps bug (@rollup/rollup-linux-x64-gnu). See https://github.com/npm/cli/issues/4828
       - name: Install dependencies
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install
+        run: npm ci
 
       - name: Lint
         run: npx turbo run lint
@@ -52,45 +49,5 @@ jobs:
       - name: Build (only packages with changes)
         run: npx turbo run build --filter='...[HEAD^1]'
 
-      # Debug: run before Publish to inspect env, npm config, and what would be published
-      - name: Debug publish context
-        if: always() # run even if a previous step failed (remove once debugging is done)
-        run: |
-          echo "=== Node / npm ==="
-          node --version
-          npm --version
-          echo "=== Working directory & .npmrc ==="
-          pwd
-          echo "--- .npmrc (root) ---"
-          cat .npmrc 2>/dev/null || echo "(no .npmrc)"
-          echo "--- .npmrc in react (if present) ---"
-          cat react/.npmrc 2>/dev/null || echo "(none)"
-          echo "--- .npmrc in syncsnap (if present) ---"
-          cat syncsnap/.npmrc 2>/dev/null || echo "(none)"
-          echo "=== npm config (registries, no secrets) ==="
-          npm config list
-          echo "=== Packages that would run publish:ci (dry run) ==="
-          npx turbo run publish:ci --filter='...[HEAD^1]' --dry-run 2>/dev/null || npx turbo run publish:ci --filter='...[HEAD^1]' --dry=run 2>/dev/null || echo "(turbo dry-run not available, listing packages)"
-          echo "=== OIDC: ACTIONS_ID_TOKEN_REQUEST_URL set? ==="
-          if [ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then echo "yes"; else echo "no (OIDC may not be available)"; fi
-          echo "=== GitHub context (repo, run) ==="
-          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
-          echo "GITHUB_WORKFLOW=$GITHUB_WORKFLOW"
-          echo "GITHUB_ACTOR=$GITHUB_ACTOR"
-
       - name: Publish (only packages with changes)
         run: npx turbo run publish:ci --filter='...[HEAD^1]'
-
-      # On failure, print npm debug logs (path shown in npm error message)
-      - name: npm debug logs
-        if: failure()
-        run: |
-          echo "=== npm _logs directory ==="
-          ls -la ~/.npm/_logs/ 2>/dev/null || echo "No _logs dir"
-          echo ""
-          echo "=== Latest npm debug log(s) ==="
-          for f in $(ls -t ~/.npm/_logs/*-debug-*.log 2>/dev/null | head -5); do
-            echo "--- $f ---"
-            cat "$f"
-            echo ""
-          done
