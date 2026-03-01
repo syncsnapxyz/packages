@@ -22,8 +22,5 @@
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.4.0"
   },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "npm:rollup@latest"
-  },
   "packageManager": "npm@10.0.0"
 }
