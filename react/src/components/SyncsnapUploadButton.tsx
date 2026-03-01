@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Job, SyncsnapUploadButtonProps } from '../types';
 import { SyncsnapQrCode } from './SyncsnapQrCode';
 import { useSyncsnapJob } from '../hooks/useSyncsnapJob';
+import { SyncsnapRateLimitError } from '../utils';
 import { Button } from './ui/button';
 import {
   Dialog,
@@ -93,12 +94,30 @@ export function SyncsnapUploadButton({
         {isWaiting ? 'Preparing...' : buttonText}
       </Button>
       {error ? (
-        <p style={{ color: '#dc2626', marginTop: 8 }}>{error.message}</p>
+        <div style={{ color: '#dc2626', marginTop: 8 }}>
+          {error instanceof SyncsnapRateLimitError ? (
+            <>
+              <p style={{ fontWeight: 600, margin: 0 }}>Rate limit exceeded</p>
+              <p style={{ margin: '4px 0 0', fontSize: 14 }}>{error.message}</p>
+            </>
+          ) : (
+            <p style={{ margin: 0 }}>{error.message}</p>
+          )}
+        </div>
       ) : null}
       {completedError ? (
-        <p style={{ color: '#dc2626', marginTop: 8 }}>
-          {completedError.message}
-        </p>
+        <div style={{ color: '#dc2626', marginTop: 8 }}>
+          {completedError instanceof SyncsnapRateLimitError ? (
+            <>
+              <p style={{ fontWeight: 600, margin: 0 }}>Rate limit exceeded</p>
+              <p style={{ margin: '4px 0 0', fontSize: 14 }}>
+                {completedError.message}
+              </p>
+            </>
+          ) : (
+            <p style={{ margin: 0 }}>{completedError.message}</p>
+          )}
+        </div>
       ) : null}
       {downloadUrl ? (
         <div
@@ -164,7 +183,13 @@ export function SyncsnapUploadButton({
                 />
               </div>
               {status ? (
-                <p style={{ margin: '8px 0 0', fontSize: 14 }}>
+                <p
+                  style={{
+                    margin: '8px 0 0',
+                    fontSize: 14,
+                    color: 'var(--foreground, inherit)',
+                  }}
+                >
                   Status: {status}
                 </p>
               ) : null}
@@ -172,7 +197,7 @@ export function SyncsnapUploadButton({
                 style={{
                   margin: '16px 0 0',
                   fontSize: 13,
-                  color: '#64748b',
+                  color: 'var(--muted-foreground, #64748b)',
                 }}
               >
                 Powered by{' '}

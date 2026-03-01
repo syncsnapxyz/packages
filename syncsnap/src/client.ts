@@ -7,6 +7,17 @@ import type {
 
 const SYNCSNAP_API_BASE_URL = 'https://api.syncsnap.xyz/api';
 
+/** Thrown when the Syncsnap API returns 429 Too Many Requests (rate limit exceeded). */
+export class SyncsnapRateLimitError extends Error {
+  readonly statusCode = 429;
+
+  constructor(message: string) {
+    super(message);
+    this.name = 'SyncsnapRateLimitError';
+    Object.setPrototypeOf(this, SyncsnapRateLimitError.prototype);
+  }
+}
+
 export class SyncsnapServer {
   private readonly baseUrl: string;
   private readonly token: string;
@@ -36,6 +47,9 @@ export class SyncsnapServer {
         typeof data === 'object' && data && 'error' in data && data.error
           ? String(data.error)
           : `Syncsnap request failed (${res.status})`;
+      if (res.status === 429) {
+        throw new SyncsnapRateLimitError(message);
+      }
       throw new Error(message);
     }
 

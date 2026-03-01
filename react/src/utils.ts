@@ -8,6 +8,17 @@ export function createUploadUrl(
   return url.toString();
 }
 
+/** Thrown when the Syncsnap API returns 429 Too Many Requests (rate limit exceeded). */
+export class SyncsnapRateLimitError extends Error {
+  readonly statusCode = 429;
+
+  constructor(message: string) {
+    super(message);
+    this.name = 'SyncsnapRateLimitError';
+    Object.setPrototypeOf(this, SyncsnapRateLimitError.prototype);
+  }
+}
+
 export async function fetchJson<T>(
   url: string,
   init?: RequestInit
@@ -22,6 +33,9 @@ export async function fetchJson<T>(
       typeof data === 'object' && data && 'error' in data && data.error
         ? String(data.error)
         : `Syncsnap request failed (${res.status})`;
+    if (res.status === 429) {
+      throw new SyncsnapRateLimitError(message);
+    }
     throw new Error(message);
   }
 
