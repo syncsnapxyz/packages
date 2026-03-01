@@ -21,12 +21,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/syncsnap/packages.git",
+    "url": "https://github.com/syncsnapxyz/packages.git",
     "directory": "syncsnap"
   },
-  "homepage": "https://github.com/syncsnap/packages/syncsnap#readme",
+  "homepage": "https://github.com/syncsnapxyz/packages/syncsnap#readme",
   "bugs": {
-    "url": "https://github.com/syncsnap/packages/syncsnap/issues"
+    "url": "https://github.com/syncsnapxyz/packages/syncsnap/issues"
   },
   "keywords": [
     "syncsnap",

@@ -25,6 +25,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
+      # npm 11.5.1+ required for OIDC trusted publishing
+      - name: Install npm
+        run: npm install -g npm@latest
+
+      # Scope registry for @syncsnap/* (auth is via OIDC, no token)
+      - name: Setup .npmrc for scope
+        run: echo "@syncsnap:registry=https://registry.npmjs.org/" >> .npmrc
+
       - name: Cache Turbo
         uses: actions/cache@v4
         with:
@@ -46,7 +54,7 @@ jobs:
         run: npx turbo run format:check
 
       - name: Build (only packages with changes)
-        run: npx turbo run build --filter='...[HEAD^1]'
+        run: npx turbo run build --filter='syncsnap'
 
       - name: Publish (only packages with changes)
-        run: npx turbo run publish:ci --filter='...[HEAD^1]'
+        run: npx turbo run publish:ci --filter='syncsnap'

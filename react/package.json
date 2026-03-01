@@ -32,12 +32,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/syncsnap/packages.git",
+    "url": "https://github.com/syncsnapxyz/packages.git",
     "directory": "react"
   },
-  "homepage": "https://github.com/syncsnap/packages/react#readme",
+  "homepage": "https://github.com/syncsnapxyz/packages/react#readme",
   "bugs": {
-    "url": "https://github.com/syncsnap/packages/react/issues"
+    "url": "https://github.com/syncsnapxyz/packages/react/issues"
   },
   "publishConfig": {
     "access": "public"
