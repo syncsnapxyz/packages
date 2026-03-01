@@ -13,6 +13,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,5 +52,3 @@ jobs:
 
       - name: Publish (only packages with changes)
         run: npx turbo run publish:ci --filter='...[HEAD^1]'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
