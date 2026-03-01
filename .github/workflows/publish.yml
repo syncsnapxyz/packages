@@ -21,9 +21,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
-          cache: "npm"
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
 
       - name: Cache Turbo
         uses: actions/cache@v4
@@ -33,8 +33,11 @@ jobs:
           restore-keys: |
             turbo-${{ runner.os }}-
 
+      # Clean install to work around npm optional deps bug (@rollup/rollup-linux-x64-gnu). See https://github.com/npm/cli/issues/4828
       - name: Install dependencies
-        run: npm install
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Lint
         run: npx turbo run lint
