@@ -1,13 +1,17 @@
 {
   "name": "syncsnap-packages",
   "private": true,
-  "workspaces": ["react", "syncsnap"],
+  "workspaces": [
+    "react",
+    "syncsnap"
+  ],
   "scripts": {
     "build": "turbo run build --filter=./react --filter=./syncsnap",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "turbo run format",
-    "format:check": "turbo run format:check"
+    "format:check": "turbo run format:check",
+    "test": "turbo run test"
   },
   "devDependencies": {
     "turbo": "^2.3.0",

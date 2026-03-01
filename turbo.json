@@ -11,6 +11,7 @@
     "lint": {"outputs": []},
     "lint:fix": {"outputs": []},
     "format": {"outputs": []},
-    "format:check": {"outputs": []}
+    "format:check": {"outputs": []},
+    "test": {"outputs": []}
   }
 }
