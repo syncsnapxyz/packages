@@ -87,3 +87,17 @@ jobs:
 
       - name: Publish (only packages with changes)
         run: npx turbo run publish:ci --filter='...[HEAD^1]'
+
+      # On failure, print npm debug logs (path shown in npm error message)
+      - name: npm debug logs
+        if: failure()
+        run: |
+          echo "=== npm _logs directory ==="
+          ls -la ~/.npm/_logs/ 2>/dev/null || echo "No _logs dir"
+          echo ""
+          echo "=== Latest npm debug log(s) ==="
+          for f in $(ls -t ~/.npm/_logs/*-debug-*.log 2>/dev/null | head -5); do
+            echo "--- $f ---"
+            cat "$f"
+            echo ""
+          done
